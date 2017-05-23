@@ -20,6 +20,7 @@ public class MDTouchHelper {
 
     private MDVRLibrary.IAdvanceGestureListener mAdvanceGestureListener;
     private List<MDVRLibrary.IGestureListener> mClickListeners = new LinkedList<>();
+    private MDVRLibrary.IZoomLevelChangeListener zoomLevelChangeListener;
     private GestureDetector mGestureDetector;
     private int mCurrentMode = 0;
     private PinchInfo mPinchInfo = new PinchInfo();
@@ -111,6 +112,8 @@ public class MDTouchHelper {
     }
 
     private void setScaleInner(float scale){
+        if (zoomLevelChangeListener != null)
+            zoomLevelChangeListener.onZoomLevelChanged(scale);
         if (mAdvanceGestureListener != null)
             mAdvanceGestureListener.onPinch(scale);
         mGlobalScale = scale;
@@ -144,6 +147,10 @@ public class MDTouchHelper {
         this.defaultScale = Math.max(minScale, this.defaultScale);
         this.defaultScale = Math.min(maxScale, this.defaultScale);
         setScaleInner(this.defaultScale);
+    }
+
+    public void setZoomLevelChangeListener(MDVRLibrary.IZoomLevelChangeListener listener) {
+        this.zoomLevelChangeListener = listener;
     }
 
     private class PinchInfo{

@@ -115,6 +115,7 @@ public class MDVRLibrary {
         mTouchHelper = new MDTouchHelper(builder.activity);
         mTouchHelper.addClickListener(builder.gestureListener);
         mTouchHelper.setPinchEnabled(builder.pinchEnabled);
+        mTouchHelper.setZoomLevelChangeListener(builder.zoomLevelChangeListener);
         final UpdatePinchRunnable updatePinchRunnable = new UpdatePinchRunnable();
         mTouchHelper.setAdvanceGestureListener(new IAdvanceGestureListener() {
             @Override
@@ -538,6 +539,9 @@ public class MDVRLibrary {
         void onHotspotHit(MDHitEvent hitEvent);
     }
 
+    public interface IZoomLevelChangeListener {
+        void onZoomLevelChanged(float level);
+    }
 
     public static Builder with(Activity activity){
         return new Builder(activity);
@@ -555,6 +559,7 @@ public class MDVRLibrary {
         private MD360Texture texture;
         private INotSupportCallback notSupportCallback;
         private IGestureListener gestureListener;
+        private IZoomLevelChangeListener zoomLevelChangeListener;
         private boolean pinchEnabled; // default false.
         private boolean eyePickEnabled = true; // default true.
         private BarrelDistortionConfig barrelDistortionConfig;
@@ -674,6 +679,11 @@ public class MDVRLibrary {
         @Deprecated
         public Builder listenTouchPick(final ITouchPickListener listener){
             this.touchPickChangedListener = new CompactTouchPickAdapter(listener);
+            return this;
+        }
+
+        public Builder listenZoomLevel(IZoomLevelChangeListener listener) {
+            zoomLevelChangeListener = listener;
             return this;
         }
 
