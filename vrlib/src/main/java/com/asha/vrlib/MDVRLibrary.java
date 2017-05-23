@@ -116,6 +116,7 @@ public class MDVRLibrary {
         mTouchHelper.addClickListener(builder.gestureListener);
         mTouchHelper.setPinchEnabled(builder.pinchEnabled);
         mTouchHelper.setZoomLevelChangeListener(builder.zoomLevelChangeListener);
+        mTouchHelper.setScrollListener(builder.scrollListener);
         final UpdatePinchRunnable updatePinchRunnable = new UpdatePinchRunnable();
         mTouchHelper.setAdvanceGestureListener(new IAdvanceGestureListener() {
             @Override
@@ -543,6 +544,10 @@ public class MDVRLibrary {
         void onZoomLevelChanged(float level);
     }
 
+    public interface IScrollListener {
+        void onScroll(float distanceX, float distanceY);
+    }
+
     public static Builder with(Activity activity){
         return new Builder(activity);
     }
@@ -560,6 +565,7 @@ public class MDVRLibrary {
         private INotSupportCallback notSupportCallback;
         private IGestureListener gestureListener;
         private IZoomLevelChangeListener zoomLevelChangeListener;
+        private IScrollListener scrollListener;
         private boolean pinchEnabled; // default false.
         private boolean eyePickEnabled = true; // default true.
         private BarrelDistortionConfig barrelDistortionConfig;
@@ -684,6 +690,11 @@ public class MDVRLibrary {
 
         public Builder listenZoomLevel(IZoomLevelChangeListener listener) {
             zoomLevelChangeListener = listener;
+            return this;
+        }
+
+        public Builder listenScroll(IScrollListener listener) {
+            scrollListener = listener;
             return this;
         }
 

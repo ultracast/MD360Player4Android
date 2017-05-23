@@ -21,6 +21,7 @@ public class MDTouchHelper {
     private MDVRLibrary.IAdvanceGestureListener mAdvanceGestureListener;
     private List<MDVRLibrary.IGestureListener> mClickListeners = new LinkedList<>();
     private MDVRLibrary.IZoomLevelChangeListener zoomLevelChangeListener;
+    private MDVRLibrary.IScrollListener scrollListener;
     private GestureDetector mGestureDetector;
     private int mCurrentMode = 0;
     private PinchInfo mPinchInfo = new PinchInfo();
@@ -50,8 +51,13 @@ public class MDTouchHelper {
             public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
                 if (mCurrentMode == MODE_PINCH) return false;
 
+                float x = distanceX / mGlobalScale;
+                float y = distanceY / mGlobalScale;
                 if (mAdvanceGestureListener != null)
-                    mAdvanceGestureListener.onDrag(distanceX / mGlobalScale, distanceY / mGlobalScale);
+                    mAdvanceGestureListener.onDrag(x, y);
+                if (scrollListener != null) {
+                    scrollListener.onScroll(x, y);
+                }
                 return true;
             }
         });
@@ -151,6 +157,10 @@ public class MDTouchHelper {
 
     public void setZoomLevelChangeListener(MDVRLibrary.IZoomLevelChangeListener listener) {
         this.zoomLevelChangeListener = listener;
+    }
+
+    public void setScrollListener(MDVRLibrary.IScrollListener listener) {
+        this.scrollListener = listener;
     }
 
     private class PinchInfo{
